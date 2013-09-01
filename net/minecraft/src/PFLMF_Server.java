@@ -46,6 +46,7 @@ public class PFLMF_Server {
 			o[2] = by2;
 			o[3] = -1;
 			byte n = 0;
+			String username = player != null ? player.username : null;
 			switch (packetId) {
 			case 0:
 				for(int i = 0; i < playerData.size(); i++) {
@@ -83,17 +84,17 @@ public class PFLMF_Server {
 						o[3] = entityId2;
 						packet.data = mod_PFLMF.sendState(i, o);
 						ModLoader.serverSendPacket(handler, new Packet250CustomPayload("PFLMF|Upd", packet.data));
-						mod_PFLMF.Debug("PFLMF_Server receivePacket entityId="+entityId+" all send i="+i+" o[0]="+o[0]+" o[1]="+o[1]+" o[2]="+o[2]+" o[3]="+o[3]);
+						mod_PFLMF.Debug("PFLMF_Server receivePacket entityId="+entityId+" username="+username+" all send i="+i+" o[0]="+o[0]+" o[1]="+o[1]+" o[2]="+o[2]+" o[3]="+o[3]);
 					}
 				}
-				mod_PFLMF.Debug("PFLMF_Server receivePacket entityId="+entityId+" all send");
+				mod_PFLMF.Debug("PFLMF_Server receivePacket entityId="+entityId+" username="+username+" all send");
 				mod_PFLMF.Debug("PFLMF_Server receivePacket --------------------end");
 				return;
 			default:
 				throw new RuntimeException("PFLMF_Server Unknown packet id="+packetId+" found !!");
 			}
 			if (player != null) {
-				mod_PFLMF.Debug("PFLMF_Server receivePacket entityId="+entityId+" packet id="+packetId+" o[0]="+o[0]+" o[1]="+o[1]);
+				mod_PFLMF.Debug("PFLMF_Server receivePacket entityId="+entityId+" username="+username+" packet id="+packetId+" o[0]="+o[0]+" o[1]="+o[1]);
 				if (packetId != 0) playerData.put(""+entityId+","+n, o);
 				else {
 					for(int i = 0; i < maxServerPacketCount; i++) {
