@@ -6,7 +6,10 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map.Entry;
 
+import cpw.mods.fml.common.network.Player;
+
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.network.INetworkManager;
 import net.minecraft.network.NetServerHandler;
 import net.minecraft.network.packet.Packet250CustomPayload;
 import net.minecraft.world.World;
@@ -21,20 +24,20 @@ public class PFLMF_Server {
 		ModLoader.serverSendPacket(pHandler, new Packet250CustomPayload("PFLMF|Upd", data));
 	}
 
-	public static void serverCustomPayload(NetServerHandler handler, Packet250CustomPayload packet) {
+	public static void serverCustomPayload(INetworkManager manager, Packet250CustomPayload packet, Player player) {
 		if (packet.data != null) ;else {
-			mod_PFLMF.Debug("受信 PFLMF_Server serverCustomPayload packet.data == null !!");
+			PFLMF.Debug("受信 PFLMF_Server serverCustomPayload packet.data == null !!");
 			return;
 		}
-		mod_PFLMF.Debug("受信 PFLMF_Server serverCustomPayload packet.data[0]="+packet.data[0]);
-		//mod_PFLMF.Debug("受信 PFLMF_Server serverCustomPayload packet.data[1]="+packet.data[1]);
+		PFLMF.Debug("受信 PFLMF_Server serverCustomPayload packet.data[0]="+packet.data[0]);
+		//PFLMF.Debug("受信 PFLMF_Server serverCustomPayload packet.data[1]="+packet.data[1]);
 		try {
 			ByteArrayInputStream byteInput = new ByteArrayInputStream(packet.data);
 			ObjectInputStream objectInput = new ObjectInputStream(byteInput);
 			byte packetId = objectInput.readByte();
 			int entityId = objectInput.readInt();
 			byte by = objectInput.readByte();
-			EntityPlayer player = getPlayer(entityId);
+			EntityPlayer entityPlayer = getPlayer(entityId);
 			Object[] o = new Object[4];
 			o[0] = entityId;
 			o[1] = by;
@@ -46,12 +49,13 @@ public class PFLMF_Server {
 			o[2] = by2;
 			o[3] = -1;
 			byte n = 0;
+			String username = entityPlayer != null ? entityPlayer.username : null;
 			switch (packetId) {
 			case 0:
 				for(int i = 0; i < playerData.size(); i++) {
 					if (playerData.containsKey(""+entityId+","+i)) playerData.remove(""+entityId+","+i);
 				}
-				mod_PFLMF.Debug("PFLMF_Server receivePacket entityId="+entityId+" playerData.remove");
+				PFLMF.Debug("PFLMF_Server receivePacket entityId="+entityId+" playerData.remove");
 				return;
 			case 1:
 				n = 1;
@@ -70,7 +74,7 @@ public class PFLMF_Server {
 				String s;
 				int i;
 				int i1;
-				mod_PFLMF.Debug("PFLMF_Server receivePacket --------------------start");
+				PFLMF.Debug("PFLMF_Server receivePacket --------------------start");
 				while(iterator.hasNext()) {
 					entry = iterator.next();
 					s = entry.getKey();
@@ -81,28 +85,28 @@ public class PFLMF_Server {
 					i = Integer.valueOf(s.substring(i1 + 1));
 					if (o != null) {
 						o[3] = entityId2;
-						packet.data = mod_PFLMF.sendState(i, o);
-						ModLoader.serverSendPacket(handler, new Packet250CustomPayload("PFLMF|Upd", packet.data));
-						mod_PFLMF.Debug("PFLMF_Server receivePacket entityId="+entityId+" all send i="+i+" o[0]="+o[0]+" o[1]="+o[1]+" o[2]="+o[2]+" o[3]="+o[3]);
+						packet.data = PFLMF.sendState(i, o);
+						manager.addToSendQueue(new Packet250CustomPayload("PFLMF|Upd", packet.data));
+						PFLMF.Debug("PFLMF_Server receivePacket entityId="+entityId+" username="+username+" all send i="+i+" o[0]="+o[0]+" o[1]="+o[1]+" o[2]="+o[2]+" o[3]="+o[3]);
 					}
 				}
-				mod_PFLMF.Debug("PFLMF_Server receivePacket entityId="+entityId+" all send");
-				mod_PFLMF.Debug("PFLMF_Server receivePacket --------------------end");
+				PFLMF.Debug("PFLMF_Server receivePacket entityId="+entityId+" username="+username+" all send");
+				PFLMF.Debug("PFLMF_Server receivePacket --------------------end");
 				return;
 			default:
 				throw new RuntimeException("PFLMF_Server Unknown packet id="+packetId+" found !!");
 			}
-			if (player != null) {
-				mod_PFLMF.Debug("PFLMF_Server receivePacket entityId="+entityId+" packet id="+packetId+" o[0]="+o[0]+" o[1]="+o[1]);
+			if (entityPlayer != null) {
+				PFLMF.Debug("PFLMF_Server receivePacket entityId="+entityId+" username="+username+" packet id="+packetId+" o[0]="+o[0]+" o[1]="+o[1]);
 				if (packetId != 0) playerData.put(""+entityId+","+n, o);
 				else {
 					for(int i = 0; i < maxServerPacketCount; i++) {
 						if (playerData.containsKey(""+entityId+","+i)) playerData.remove(""+entityId+","+i);
 					}
 				}
-				if (packetId != 4) ((WorldServer)player.worldObj).getEntityTracker().sendPacketToAllPlayersTrackingEntity(player, packet);
+				if (packetId != 4) ((WorldServer)entityPlayer.worldObj).getEntityTracker().sendPacketToAllPlayersTrackingEntity(entityPlayer, packet);
 			} else {
-				mod_PFLMF.Debug("PFLMF_Server receivePacket player == null !!");
+				PFLMF.Debug("PFLMF_Server receivePacket player == null !!");
 			}
 		} catch (Throwable t) {
 			t.printStackTrace();
