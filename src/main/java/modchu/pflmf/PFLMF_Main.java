@@ -1,7 +1,7 @@
 package modchu.pflmf;
 
 import java.io.File;
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.concurrent.ConcurrentHashMap;
 
 import modchu.lib.Modchu_Config;
@@ -18,10 +18,10 @@ public class PFLMF_Main implements PFLMF_IPacketConstant {
 	public static boolean usePacket = true;
 	public static final String packetChannelName = "PFLMF";
 
-	public static ArrayList<Object[]> sendList = new ArrayList();
+	public static LinkedList<Object[]> sendList = new LinkedList();
 	private static boolean autoUsePacketOff = false;
 
-	public void load() {
+	public static void load() {
 		Modchu_Debug.lDebug("PFLMF_Main load");
 		loadcfg();
 		Modchu_Debug.lDebug("PFLMF_Main load end.");
@@ -56,7 +56,7 @@ public class PFLMF_Main implements PFLMF_IPacketConstant {
 	public static void sendState() {
 		if (!usePacket) return;
 		if (sendList != null && !sendList.isEmpty()) {
-			ArrayList list = new ArrayList();
+			LinkedList list = new LinkedList();
 			int i1;
 			for (int i = sendList.size() - 1; i > -1; i--) {
 				Modchu_Debug.Debug("sendState sendList i=" + i);
@@ -159,7 +159,7 @@ public class PFLMF_Main implements PFLMF_IPacketConstant {
 		return (Object[]) o;
 	}
 
-	public static ConcurrentHashMap<Integer, Object> getPlayerState(int entityId, byte packetId) {
+	public static LinkedList getPlayerState(int entityId, byte packetId) {
 		//Modchu_Debug.Debug("PFLMF getPlayerState entityId="+entityId+" packetId="+packetId);
 		return PFLMF_Client.getPlayerState(entityId, packetId);
 	}
@@ -188,23 +188,23 @@ public class PFLMF_Main implements PFLMF_IPacketConstant {
 		}
 	}
 
-	public static void onPacketData(Object packet, Object entityPlayer, String channelName) {
+	public static void onPacketData(LinkedList list, Object entityPlayer, String channelName) {
 		boolean isLANWorld = Modchu_AS.getBoolean(Modchu_AS.isLANWorld);
 		boolean isIntegratedServerRunning = Modchu_AS.getBoolean(Modchu_AS.isIntegratedServerRunning);
-		Modchu_Debug.Debug("PFLMF 受信 onPacketData isIntegratedServerRunning="+isIntegratedServerRunning);
+		//Modchu_Debug.Debug("PFLMF 受信 onPacketData isIntegratedServerRunning="+isIntegratedServerRunning);
 		boolean b = !Modchu_Main.isServer
 				&& !isLANWorld
 				| (isLANWorld
 						&& !isIntegratedServerRunning);
 		Modchu_Debug.Debug("PFLMF 受信 onPacketData " + (b ? "client" : "server"));
 		if (b) {
-			PFLMF_Client.onPacketData(packet, entityPlayer, channelName);
+			PFLMF_Client.onPacketData(list, entityPlayer, channelName);
 		} else {
-			PFLMF_Server.onPacketData(packet, entityPlayer, channelName);
+			PFLMF_Server.onPacketData(list, entityPlayer, channelName);
 /*
 			if (!Modchu_Main.isServer
 					&& isLANWorld) {
-				PFLMF_Client.onPacketData(packet, entityPlayer, channelName);
+				PFLMF_Client.onPacketData(list, entityPlayer, channelName);
 			}
 */
 		}
