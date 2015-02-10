@@ -15,7 +15,7 @@ import modchu.lib.characteristic.Modchu_AS;
 import modchu.lib.characteristic.Modchu_CastHelper;
 
 public class PFLMF_Main implements PFLMF_IPacketConstant {
-	public static final String version = "7a";
+	public static final String version = "7b";
 	public static modc_PFLMF baseModInstance;
 	public static boolean usePacket = true;
 	public static final String packetChannelName = "PFLMF";
@@ -93,7 +93,7 @@ public class PFLMF_Main implements PFLMF_IPacketConstant {
 		entity = o.length > 2
 				&& Modchu_Reflect.loadClass("Entity").isInstance(o[2]) ? o[2] : null;
 		if (modelData != null
-				&& entity != null) ;else {
+				&& entity != null); else {
 			Modchu_Debug.Debug("PFLMF_Main sendState return modelData=" + modelData);
 			Modchu_Debug.Debug("PFLMF_Main sendState return entity=" + entity);
 			return;
