@@ -5,17 +5,17 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
 
+import modchu.lib.Modchu_AS;
+import modchu.lib.Modchu_CastHelper;
 import modchu.lib.Modchu_Config;
 import modchu.lib.Modchu_Debug;
 import modchu.lib.Modchu_Main;
 import modchu.lib.Modchu_Packet;
 import modchu.lib.Modchu_PacketManager;
 import modchu.lib.Modchu_Reflect;
-import modchu.lib.characteristic.Modchu_AS;
-import modchu.lib.characteristic.Modchu_CastHelper;
 
 public class PFLMF_Main implements PFLMF_IPacketConstant {
-	public static final String version = "7b";
+	public static final String version = "8";
 	public static modc_PFLMF baseModInstance;
 	public static boolean usePacket = true;
 	public static final String packetChannelName = "PFLMF";
