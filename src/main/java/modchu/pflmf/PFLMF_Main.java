@@ -15,7 +15,7 @@ import modchu.lib.Modchu_PacketManager;
 import modchu.lib.Modchu_Reflect;
 
 public class PFLMF_Main implements PFLMF_IPacketConstant {
-	public static final String version = "8";
+	public static final String version = "8a";
 	public static modc_PFLMF baseModInstance;
 	public static boolean usePacket = true;
 	public static final String packetChannelName = "PFLMF";
@@ -99,11 +99,11 @@ public class PFLMF_Main implements PFLMF_IPacketConstant {
 			return;
 		}
 		Object[] byte0 = null;
-		Object uuid = Modchu_AS.getUUID(Modchu_AS.entityGetUniqueID, entity);
+		Object uuid = Modchu_Main.getMinecraftVersion() > 179 ? Modchu_AS.getUUID(Modchu_AS.entityGetUniqueID, entity) : null;
 		//Modchu_Debug.lDebug("PFLMF_Main sendState entityUUID="+uuid);
 		//Modchu_Debug.lDebug("PFLMF_Main sendState entityUUID.getMostSignificantBits()="+((UUID) uuid).getMostSignificantBits());
 		//Modchu_Debug.lDebug("PFLMF_Main sendState entityUUID.getLeastSignificantBits()="+((UUID) uuid).getLeastSignificantBits());
-		Object entityId = Modchu_Main.getMinecraftVersion() > 179 ? uuid != null ? uuid.toString() : null : Modchu_AS.getInt(Modchu_AS.entityEntityID, entity);
+		Object entityId = uuid != null ? uuid.toString() : Modchu_AS.getInt(Modchu_AS.entityEntityID, entity);
 		if (entityId != null); else return;
 		switch (i1) {
 		case packet_IDRemove:
@@ -267,9 +267,15 @@ public class PFLMF_Main implements PFLMF_IPacketConstant {
 	}
 
 	public static Object getPlayer(Object world, int entityId) {
+		boolean debug = false;
 		for (Object entityPlayer : Modchu_AS.getList(Modchu_AS.worldPlayerEntities, world)) {
 			int entityId2 = Modchu_AS.getInt(Modchu_AS.entityEntityID, entityPlayer);
-			if (entityId2 == entityId) return entityPlayer;
+			if (entityId2 == entityId) {
+				if (debug) Modchu_Debug.lDebug("PFLMF_Main getPlayer entityId ok return. entityPlayer="+entityPlayer);
+				return entityPlayer;
+			} else {
+				if (debug) Modchu_Debug.lDebug("PFLMF_Main getPlayer entityId2 != entityId entityId2="+entityId2);
+			}
 		}
 		return null;
 	}
