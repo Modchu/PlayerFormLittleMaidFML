@@ -15,7 +15,7 @@ import modchu.lib.Modchu_PacketManager;
 import modchu.lib.Modchu_Reflect;
 
 public class PFLMF_Main implements PFLMF_IPacketConstant {
-	public static final String version = "8a";
+	public static final String version = "9";
 	public static modc_PFLMF baseModInstance;
 	public static boolean usePacket = true;
 	public static final String packetChannelName = "PFLMF";
@@ -228,12 +228,6 @@ public class PFLMF_Main implements PFLMF_IPacketConstant {
 			PFLMF_Client.onPacketData(list, entityPlayer, channelName);
 		} else {
 			PFLMF_Server.onPacketData(list, entityPlayer, channelName);
-/*
-			if (!Modchu_Main.isServer
-					&& isLANWorld) {
-				PFLMF_Client.onPacketData(list, entityPlayer, channelName);
-			}
-*/
 		}
 		if (debug) Modchu_Debug.lDebug("PFLMF_Main 受信 onPacketData end.");
 	}
