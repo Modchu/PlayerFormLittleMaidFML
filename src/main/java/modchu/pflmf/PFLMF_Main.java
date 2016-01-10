@@ -15,7 +15,7 @@ import modchu.lib.Modchu_PacketManager;
 import modchu.lib.Modchu_Reflect;
 
 public class PFLMF_Main implements PFLMF_IPacketConstant {
-	public static final String version = "9";
+	public static final String version = "10";
 	public static modc_PFLMF baseModInstance;
 	public static boolean usePacket = true;
 	public static final String packetChannelName = "PFLMF";
