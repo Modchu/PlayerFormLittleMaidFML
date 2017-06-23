@@ -15,7 +15,7 @@ import modchu.lib.Modchu_PacketManager;
 import modchu.lib.Modchu_Reflect;
 
 public class PFLMF_Main implements PFLMF_IPacketConstant {
-	public static final String version = "10b";
+	public static final String version = "10c";
 	public static modc_PFLMF baseModInstance;
 	public static boolean usePacket = true;
 	public static final String packetChannelName = "PFLMF";
@@ -26,9 +26,18 @@ public class PFLMF_Main implements PFLMF_IPacketConstant {
 	public static void load(modc_PFLMF base) {
 		Modchu_Debug.systemLogDebug("[PFLMF_Main] 1 - (1 / 2) load()");
 		baseModInstance = base;
+		Modchu_Main.eventRegister(baseModInstance);
 		Modchu_Packet.registerPacket(baseModInstance, packetChannelName);
 		loadcfg();
 		Modchu_Debug.systemLogDebug("[PFLMF_Main] 1 - (2 / 2) load() end.");
+	}
+
+	public static void modsLoaded() {
+		if (!Modchu_Main.isModUse("modchu.pflm.modc_PFLM_PlayerFormLittleMaid")) {
+			Modchu_Main.eventUnRegister(baseModInstance);
+			Modchu_Main.unRegisterMod("modchu.pflmf.modc_PFLMF", baseModInstance);
+			return;
+		}
 	}
 
 	public static boolean onTickInGame(byte by, Object... tickData) {
