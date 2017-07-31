@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 import modchu.lib.Modchu_AS;
 import modchu.lib.Modchu_CastHelper;
@@ -15,7 +16,7 @@ import modchu.lib.Modchu_PacketManager;
 import modchu.lib.Modchu_Reflect;
 
 public class PFLMF_Main implements PFLMF_IPacketConstant {
-	public static final String version = "10c";
+	public static final String version = "11";
 	public static modc_PFLMF baseModInstance;
 	public static boolean usePacket = true;
 	public static final String packetChannelName = "PFLMF";
@@ -208,7 +209,8 @@ public class PFLMF_Main implements PFLMF_IPacketConstant {
 				Modchu_Config.writerConfig(mainCfgfile, s);
 			} else {
 				// cfgファイルがある
-				usePacket = Modchu_CastHelper.Boolean(Modchu_Config.loadConfig(mainCfgfile, "usePacket", usePacket));
+				ConcurrentHashMap<String, String> map = Modchu_Config.loadAllConfig(mainCfgfile);
+				usePacket = map.containsKey("usePacket") ? Modchu_CastHelper.Boolean(map.get("usePacket")) : usePacket;
 				//debugMessage = Modchu_CastHelper.Boolean((Modchu_Config.loadConfig(mainCfgfile, "debugMessage", usePacket)));
 				String k[] = { "usePacket"
 				//, "debugMessage"
